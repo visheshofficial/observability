@@ -1,0 +1,56 @@
+# Custom values for kube-prometheus-stack
+prometheus:
+  service:
+    type: NodePort
+    nodePort: 30090
+  prometheusSpec:
+    storageSpec:
+      volumeClaimTemplate:
+        spec:
+          accessModes: ["ReadWriteOnce"]
+          resources:
+            requests:
+              storage: 10Gi
+
+prometheusOperator:
+  admissionWebhooks:
+    enabled: true
+    failurePolicy: Fail
+    timeoutSeconds: 10
+    deployment:
+      enabled: true
+
+
+alertmanager:
+  service:
+    type: NodePort
+    nodePort: 30093
+
+grafana:
+  service:
+    type: NodePort
+    nodePort: 30091
+  adminPassword: admin123
+  persistence:
+    enabled: true
+    size: 5Gi
+
+# Enable ServiceMonitor for additional services
+kubeApiServer:
+  enabled: true
+kubelet:
+  enabled: true
+kubeControllerManager:
+  enabled: true
+coreDns:
+  enabled: true
+kubeEtcd:
+  enabled: true
+kubeScheduler:
+  enabled: true
+kubeProxy:
+  enabled: true
+kubeStateMetrics:
+  enabled: true
+nodeExporter:
+  enabled: true

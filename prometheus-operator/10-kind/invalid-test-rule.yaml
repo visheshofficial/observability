@@ -1,0 +1,16 @@
+
+apiVersion: monitoring.coreos.com/v1
+kind: PrometheusRule
+metadata:
+  name: invalid-test-rule
+  namespace: monitoring
+  labels:
+    app: kube-prometheus-stack
+    release: prometheus
+spec:
+  groups:
+  - name: invalid.rules
+    rules:
+    - alert: BadAlert
+      expr: this_is_invalid_promql_syntax ===== 1
+      for: 30s

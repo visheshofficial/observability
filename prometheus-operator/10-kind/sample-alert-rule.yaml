@@ -1,0 +1,59 @@
+apiVersion: monitoring.coreos.com/v1
+kind: PrometheusRule
+metadata:
+  name: sample-alert-rules
+  namespace: monitoring
+  labels:
+    # These labels must match what Prometheus is looking for
+    app: kube-prometheus-stack
+    release: prometheus
+    prometheus: kube-prometheus-stack-prometheus
+    role: alert-rules
+spec:
+  groups:
+  - name: sample.rules
+    interval: 30s
+    rules:
+    # A simple alert that will fire quickly for testing
+    - alert: TestAlert
+      expr: up == 1
+      for: 1m
+      labels:
+        severity: info
+        team: platform
+      annotations:
+        summary: "Test Alert - This is working!"
+        description: "This is a test alert to verify the alerting pipeline is working. Instance {{ $labels.instance }} is up."
+        
+    # An alert that should fire on high CPU (you can trigger this easily)
+    - alert: HighCPUUsage
+      expr: 100 - (avg by(instance) (rate(node_cpu_seconds_total{mode="idle"}[5m])) * 100) > 80
+      for: 2m
+      labels:
+        severity: warning
+        team: infrastructure
+      annotations:
+        summary: "High CPU usage detected"
+        description: "CPU usage is above 80% on {{ $labels.instance }} for more than 2 minutes."
+        
+    # An alert for high memory usage
+    - alert: HighMemoryUsage
+      expr: (1 - (node_memory_MemAvailable_bytes / node_memory_MemTotal_bytes)) * 100 > 90
+      for: 1m
+      labels:
+        severity: critical
+        team: infrastructure
+      annotations:
+        summary: "High memory usage detected"
+        description: "Memory usage is above 90% on {{ $labels.instance }}."
+
+    # A guaranteed-to-fire alert for immediate testing
+    - alert: AlwaysFiring
+      expr: vector(1)
+      for: 0s
+      labels:
+        severity: info
+        team: test
+      annotations:
+        summary: "Always Firing Test Alert"
+        description: "This alert always fires and is useful for testing alerting pipelines."

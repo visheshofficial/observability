@@ -1,0 +1,14 @@
+
+apiVersion: monitoring.coreos.com/v1
+kind: PrometheusRule
+metadata:
+  name: missing-labels-test
+  namespace: monitoring
+  # Missing the required labels!
+spec:
+  groups:
+  - name: test.rules
+    rules:
+    - alert: WillNotWork
+      expr: up == 1
+      for: 30s

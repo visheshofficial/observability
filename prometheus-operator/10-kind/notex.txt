@@ -1,0 +1,111 @@
+
+Step 1: Create a kind cluster
+Create a kind cluster configuration file to expose necessary ports:
+
+bash# Create the cluster
+kind create cluster --config prometheus-kind.yaml
+
+# Verify the cluster is running
+kubectl cluster-info --context kind-prometheus-cluster
+kubectl get nodes
+
+--------------------------------------
+
+Step 2: Install Prometheus Operator using Helm
+
+Add the Prometheus community Helm repository:
+bash# Add the prometheus-community helm repo
+
+helm repo add prometheus-community https://prometheus-community.github.io/helm-charts
+
+helm repo update
+
+Create a namespace for monitoring:
+
+kubectl create namespace monitoring
+----------------------------------
+
+Step 3: Install kube-prometheus-stack
+
+The kube-prometheus-stack includes Prometheus Operator, Prometheus, Alertmanager, and Grafana:
+
+Install the Prometheus stack:
+
+bash# Install kube-prometheus-stack
+
+helm install prometheus prometheus-community/kube-prometheus-stack \
+  --namespace monitoring \
+  --values prometheus-values.yaml \
+  --wait
+
+# Verify the installation
+
+kubectl get pods -n monitoring
+
+kubectl get services -n monitoring
+
+----------------------------------
+
+Step 4: Access the monitoring services
+Once all pods are running, you can access the services:
+Prometheus UI:
+bash# Access Prometheus at http://localhost:30090
+echo "Prometheus: http://localhost:30090"
+Grafana Dashboard:
+bash# Access Grafana at http://localhost:30091
+# Default credentials: admin / admin123
+echo "Grafana: http://localhost:30091"
+echo "Username: admin"
+echo "Password: admin123"
+Alertmanager:
+bash# Access Alertmanager at http://localhost:30093
+echo "Alertmanager: http://localhost:30093"
+
+---------------------------------
+Step 5: Verify Prometheus Operator
+Check if the Prometheus Operator is working:
+bash# Check CustomResourceDefinitions created by the operator
+kubectl get crd | grep monitoring
+
+# Check if ServiceMonitors are being discovered
+kubectl get servicemonitor -n monitoring
+
+# Check Prometheus targets
+# Go to http://localhost:30090/targets in your browser
+
+-----------------------------
+Step 6: Create a sample ServiceMonitor (Optional)
+To test the Prometheus Operator functionality, you can create a sample application with a ServiceMonitor:sample-app-with-monitoring.yamlCode 
+
+Apply the sample application:
+bashkubectl apply -f sample-app-with-monitoring.yaml
+
+--------------------------------------
+
+ Step 1: Create a Sample PrometheusRule
+
+Let's create and test a sample alert in your Prometheus setup. I'll walk you through creating a PrometheusRule that will trigger an alert.Step 1: Create a Sample PrometheusRuleFirst, let's create a simple alert that will fire when a node has high CPU usage:
+
+kubectl apply -f sample-alert-rule.yaml
+
+--------------------------------------
+
+Step 2: Verify the Rule is Loaded
+Check if Prometheus has picked up your new rule:
+bash# Check if the PrometheusRule was created
+kubectl get prometheusrule -n monitoring
+
+# Check Prometheus logs to see if it loaded the rule
+kubectl logs -n monitoring deployment/prometheus-kube-prometheus-prometheus-operator
+
+--------------------------------------
+
+Step 3: Check Alerts in Prometheus UI
+
+Go to Prometheus UI: http://localhost:30090
+Navigate to "Alerts" in the top menu
+Look for your alerts: You should see TestAlert, HighCPUUsage, HighMemoryUsage, and AlwaysFiring
+
+The AlwaysFiring alert should immediately be in "Pending" or "Firing" state since it uses vector(1) which always returns 1.
+
+--------------------------------------
