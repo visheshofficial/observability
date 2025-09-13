@@ -1,0 +1,5 @@
+# Values for Istio control plane (istiod)
+global:
+  istioNamespace: istio-system
+meshConfig:
+  accessLogFile: /dev/stdout

@@ -1,0 +1,5 @@
+# Values for Istio base chart
+# Usually no customizations are required here
+# Keeping the namespace explicit for clarity
+global:
+  istioNamespace: istio-system
