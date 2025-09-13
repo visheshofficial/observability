@@ -1,13 +1,13 @@
 apiVersion: v1
-kind: ConfigMap
+kind: Secret
 metadata:
-  name: argocd-cm
+  name: observability-repo
   namespace: argocd
   labels:
-    app.kubernetes.io/name: argocd-cm
-    app.kubernetes.io/part-of: argocd
-data:
-  repositories: |
-    - type: git
-      url: https://github.com/visheshofficial/observability
-      name: istio-gitops
+    argocd.argoproj.io/secret-type: repository
+stringData:
+  # Public repo: only URL is required
+  url: https://github.com/visheshofficial/observability
+  project: default
+  name: observability
+
