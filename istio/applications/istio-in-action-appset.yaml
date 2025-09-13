@@ -1,0 +1,36 @@
+apiVersion: argoproj.io/v1alpha1
+kind: ApplicationSet
+metadata:
+  name: istio-in-action
+  namespace: argocd
+spec:
+  generators:
+    - list:
+        elements:
+          - name: chapter-01
+            path: istio/apps/istio-in-action/chapter-01
+          # Add chapters you want to manage here. Examples:
+          # - name: chapter-02
+          #   path: istio/apps/istio-in-action/chapter-02
+  template:
+    metadata:
+      name: "istio-in-action-{{name}}"
+      labels:
+        app.kubernetes.io/part-of: istio-in-action
+    spec:
+      project: default
+      source:
+        repoURL: https://github.com/visheshofficial/observability
+        targetRevision: HEAD
+        path: "{{path}}"
+        directory:
+          recurse: true
+      destination:
+        server: https://kubernetes.default.svc
+        namespace: default
+      syncPolicy:
+        automated:
+          prune: true
+          selfHeal: true
+        syncOptions:
+          - CreateNamespace=true
