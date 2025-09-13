@@ -3,8 +3,6 @@ kind: Application
 metadata:
   name: argocd
   namespace: argocd
-  labels:
-    app.kubernetes.io/part-of: bootstrap
 spec:
   project: default
   # Argo CD manages Argo CD via Helm, using values from this repo
@@ -13,6 +11,7 @@ spec:
     - repoURL: https://argoproj.github.io/argo-helm
       chart: argo-cd
       targetRevision: 8.3.6
+      helm:
         valueFiles:
           - $values/istio/infrastructure/argocd/argo-value/argocd-values.yaml
     # 2) Git repo source providing the values file (referenced above via $values/...)
