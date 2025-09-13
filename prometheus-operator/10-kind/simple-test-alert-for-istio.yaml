@@ -1,0 +1,20 @@
+apiVersion: monitoring.coreos.com/v1
+kind: PrometheusRule
+metadata:
+  name: simple-test-alert-istio
+  namespace: monitoring
+  labels:
+    app: kube-prometheus-stack
+    release: prometheus
+spec:
+  groups:
+  - name: simple.rules.after.istio
+    rules:
+    - alert: SimpleAlert
+      expr: up{job="prometheus-kube-prometheus-prometheus"} == 1
+      for: 30s
+      labels:
+        severity: warning
+      annotations:
+        summary: "Simple test alert afgter istio"
+        description: "This alert fires when any target is up"

@@ -1,0 +1,83 @@
+# ArgoCD Configuration for Local Kind Cluster
+
+# Global configuration
+global:
+  domain: localhost:32080  # Updated to match new Kind config
+  
+# Controller configuration
+controller:
+  replicas: 1
+  resources:
+    limits:
+      cpu: 500m
+      memory: 512Mi
+    requests:
+      cpu: 250m
+      memory: 256Mi
+
+# Server configuration
+server:
+  replicas: 1
+  service:
+    type: NodePort
+    nodePortHttp: 32080     # Updated to match Kind hostPort
+    nodePortHttps: 32443    # Updated to match Kind hostPort                        
+  
+  # Disable TLS for local development
+  extraArgs:
+    - --insecure
+  
+  config:
+    # Enable local users
+    accounts.admin: apiKey, login
+    accounts.developer: apiKey, login
+    
+  
+  # RBAC configuration
+  rbacConfig:
+    policy.default: role:readonly
+    policy.csv: |
+      p, role:admin, applications, *, */*, allow
+      p, role:admin, clusters, *, *, allow
+      p, role:admin, repositories, *, *, allow
+      g, admin, role:admin
+      g, developer, role:readonly
+  
+  resources:
+    limits:
+      cpu: 500m
+      memory: 512Mi
+    requests:
+      cpu: 250m
+      memory: 256Mi
+
+# Repository Server configuration
+repoServer:
+  replicas: 1
+  resources:
+    limits:
+      cpu: 500m
+      memory: 512Mi
+    requests:
+      cpu: 250m
+      memory: 256Mi
+
+# Application Set Controller (optional, for advanced GitOps patterns)
+applicationSet:
+  enabled: true
+  replicas: 1
+
+# Redis configuration
+redis:
+  enabled: true
+  resources:
+    limits:
+      cpu: 200m
+      memory: 128Mi
+    requests:
+      cpu: 100m
+      memory: 64Mi
+
+# Notifications controller (optional)
+notifications:
+  enabled: false

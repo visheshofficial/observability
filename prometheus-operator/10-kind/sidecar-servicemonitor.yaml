@@ -1,0 +1,19 @@
+apiVersion: monitoring.coreos.com/v1
+kind: ServiceMonitor
+metadata:
+  name: istio-mesh
+  namespace: monitoring
+  labels:
+    app: kube-prometheus-stack
+    release: prometheus
+spec:
+  selector:
+    matchLabels:
+      app: httpbin
+  namespaceSelector:
+    matchNames:
+    - test-app
+  endpoints:
+  - port: "http-monitoring"
+    interval: 30s
+    path: /stats/prometheus

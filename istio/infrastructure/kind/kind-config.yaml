@@ -1,0 +1,111 @@
+kind: Cluster
+apiVersion: kind.x-k8s.io/v1alpha4
+name: istio-in-action-cluster
+nodes:
+- role: control-plane
+  kubeadmConfigPatches:
+  - |
+    kind: InitConfiguration
+    nodeRegistration:
+      kubeletExtraArgs:
+        node-labels: "ingress-ready=true"
+  extraPortMappings:
+  # HTTP/HTTPS for Istio Gateway
+  - containerPort: 80
+    hostPort: 30080
+    protocol: TCP
+  - containerPort: 443
+    hostPort: 30443
+    protocol: TCP
+  
+  # ArgoCD
+  - containerPort: 32080
+    hostPort: 32080
+    protocol: TCP
+  - containerPort: 32443
+    hostPort: 32443
+    protocol: TCP
+  
+  # Istio Control Plane - keep original ports (under 65535)
+  - containerPort: 15010
+    hostPort: 15010
+    protocol: TCP
+  - containerPort: 15011
+    hostPort: 15011
+    protocol: TCP
+  - containerPort: 15014
+    hostPort: 15014
+    protocol: TCP
+  
+  # Observability Stack - use 30xxx range
+  - containerPort: 20001    # Kiali
+    hostPort: 30201
+    protocol: TCP
+  - containerPort: 16686    # Jaeger
+    hostPort: 30686
+    protocol: TCP
+  - containerPort: 3000     # Grafana
+    hostPort: 30300
+    protocol: TCP
+  - containerPort: 9090     # Prometheus
+    hostPort: 30909
+    protocol: TCP
+  - containerPort: 9093     # AlertManager
+    hostPort: 30903
+    protocol: TCP
+  - containerPort: 10902    # Thanos Query
+    hostPort: 30902
+    protocol: TCP
+  - containerPort: 10901    # Thanos Sidecar
+    hostPort: 30901
+    protocol: TCP
+  - containerPort: 3100     # Loki
+    hostPort: 30310
+    protocol: TCP
+  - containerPort: 3200     # Tempo
+    hostPort: 30320
+    protocol: TCP
+  - containerPort: 9009     # Mimir
+    hostPort: 30009
+    protocol: TCP
+  - containerPort: 8428     # VictoriaMetrics
+    hostPort: 30428
+    protocol: TCP
+  - containerPort: 4317     # OpenTelemetry Collector
+    hostPort: 30317
+    protocol: TCP
+  - containerPort: 4040     # Pyroscope
+    hostPort: 30040
+    protocol: TCP
+  - containerPort: 24224    # Fluentd
+    hostPort: 30224
+    protocol: TCP
+  - containerPort: 9200     # Elasticsearch
+    hostPort: 30200
+    protocol: TCP
+  - containerPort: 5601     # Kibana
+    hostPort: 30561
+    protocol: TCP
+  - containerPort: 9000     # MinIO
+    hostPort: 30000
+    protocol: TCP
+  - containerPort: 9001     # MinIO Console
+    hostPort: 30001
+    protocol: TCP
+  
+  # Application ports
+  - containerPort: 9080     # Bookinfo services
+    hostPort: 31080
+    protocol: TCP
+  - containerPort: 9081
+    hostPort: 31081
+    protocol: TCP
+  - containerPort: 9082
+    hostPort: 31082
+    protocol: TCP
+  - containerPort: 9083
+    hostPort: 31083
+    protocol: TCP
+
+- role: worker
+- role: worker
