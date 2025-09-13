@@ -7,8 +7,8 @@ spec:
   generators:
     - list:
         elements:
-          - name: chapter-01
-            path: istio/apps/istio-in-action/chapter-01
+          - name: base
+            path: istio/apps/istio-in-action/base
           # Add chapters you want to manage here. Examples:
           # - name: chapter-02
           #   path: istio/apps/istio-in-action/chapter-02
@@ -17,6 +17,8 @@ spec:
       name: "istio-in-action-{{name}}"
       labels:
         app.kubernetes.io/part-of: istio-in-action
+      finalizers:
+        - resources-finalizer.argocd.argoproj.io
     spec:
       project: default
       source:
@@ -34,3 +36,5 @@ spec:
           selfHeal: true
         syncOptions:
           - CreateNamespace=true
+          - PruneLast=true
+          - PrunePropagationPolicy=foreground
