@@ -10,8 +10,8 @@ spec:
           - name: base
             path: istio/apps/istio-in-action/base
           # Add chapters you want to manage here. Examples:
-          # - name: chapter-02
-          #   path: istio/apps/istio-in-action/chapter-02
+          - name: chapter-02
+            path: istio/apps/istio-in-action/chapter-02
   template:
     metadata:
       name: "istio-in-action-{{name}}"
