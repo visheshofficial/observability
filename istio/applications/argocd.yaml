@@ -3,21 +3,30 @@ kind: Application
 metadata:
   name: argocd
   namespace: argocd
+  labels:
+    app.kubernetes.io/part-of: bootstrap
 spec:
   project: default
-  # Argo CD manages Argo CD via Helm, using values from this repo
+  # Argo CD manages itself via Helm and also applies the repo Secret
   sources:
-    # 1) Helm chart source
+    # 1) Helm chart source for Argo CD
     - repoURL: https://argoproj.github.io/argo-helm
       chart: argo-cd
-      targetRevision: 8.3.7
+      targetRevision: 8.3.6
       helm:
         valueFiles:
-          - $values/istio/infrastructure/argocd/argo-value/argocd-values.yaml
+          - $values/istio/apps/argo-value/argocd-values.yaml
     # 2) Git repo source providing the values file (referenced above via $values/...)
     - repoURL: https://github.com/visheshofficial/observability
       targetRevision: HEAD
       ref: values
+    # 3) Git repo source to apply only the repository Secret manifest
+    - repoURL: https://github.com/visheshofficial/observability
+      targetRevision: HEAD
+      path: istio/apps/argo-value
+      directory:
+        recurse: false
+        include: repository.yaml
   destination:
     server: https://kubernetes.default.svc
     namespace: argocd
