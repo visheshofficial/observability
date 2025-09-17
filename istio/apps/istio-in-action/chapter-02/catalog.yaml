@@ -2,6 +2,7 @@ apiVersion: v1
 kind: ServiceAccount
 metadata:
   name: catalog
+  namespace: istioinaction
 ---
 apiVersion: v1
 kind: Service
@@ -9,6 +10,7 @@ metadata:
   labels:
     app: catalog
   name: catalog
+  namespace: istioinaction
 spec:
   ports:
   - name: http
@@ -21,6 +23,7 @@ spec:
 apiVersion: apps/v1
 kind: Deployment
 metadata:
+  namespace: istioinaction
   labels:
     app: catalog
     version: v1
