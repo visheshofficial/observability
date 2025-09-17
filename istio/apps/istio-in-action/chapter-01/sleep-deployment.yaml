@@ -19,3 +19,10 @@ spec:
         - name: sleep
           image: curlimages/curl:8.8.0
           command: ["sh", "-c", "sleep infinity"]
+          resources:
+            requests:
+              cpu: "10m"
+              memory: "16Mi"
+            limits:
+              cpu: "100m"
+              memory: "64Mi"
