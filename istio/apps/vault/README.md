@@ -49,4 +49,4 @@ vault write auth/kubernetes/role/vault-secret-injection-role \
 
 //   audience="vault" removed for demo
 
-vault kv put secret/vault-secret-injection/app-creds username=demo-user password=demo-pass
+vault kv put secret/vault-secret-injection/app-creds Username=Demo-user Password=Demo-pass
