@@ -1,0 +1,10 @@
+server:
+  dev:
+    enabled: true
+  ui:
+    enabled: true
+  service:
+    type: NodePort
+    nodePort: 30000
+injector:
+  enabled: true
