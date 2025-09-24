@@ -10,8 +10,8 @@ spec:
           - name: base
             path: istio/apps/vault-in-action/base
           # Add chapters you want to manage here. Examples:
-          # - name: chapter-02
-          #   path: istio/apps/vault-in-action/chapter-02
+          - name: vault-secret-injection
+            path: istio/apps/vault-in-action/vault-secret-injection
   template:
     metadata:
       name: "vault-in-action-{{name}}"
